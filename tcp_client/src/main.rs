@@ -29,12 +29,8 @@ fn get_input(console_message: &str) -> io::Result<String> {
 
     print!("{console_message}");
 
-    let _ = io::stdout().flush();
+    io::stdout().flush()?;
     io::stdin().read_line(&mut input)?;
 
-    if let Some('\n') = input.chars().next_back() {
-        input.pop();
-    }
-
-    Ok(input)
+    Ok(input.trim_end().to_string())
 }
