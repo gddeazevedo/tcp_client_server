@@ -1,10 +1,9 @@
-use std::net::{ TcpListener, TcpStream, SocketAddrV4, Ipv4Addr, SocketAddr };
 use std::io::{self, Read, Write};
+use std::net::{Ipv4Addr, SocketAddr, SocketAddrV4, TcpListener, TcpStream};
 use std::str;
 
-
 const IP: Ipv4Addr = Ipv4Addr::new(127, 0, 0, 1);
-const PORT: u16    = 12000;
+const PORT: u16 = 12000;
 
 fn main() -> io::Result<()> {
     let server_addr = SocketAddrV4::new(IP, PORT);
@@ -20,26 +19,25 @@ fn main() -> io::Result<()> {
     }
 }
 
-
 fn handle_client_connection(mut stream: TcpStream, client_addr: SocketAddr) -> io::Result<()> {
     let mut buffer: [u8; 1024] = [0; 1024];
 
     loop {
         println!("Waiting for messages from {client_addr}...");
         let bytes = stream.read(&mut buffer)?;
-        
+
         if bytes == 0 {
             println!("Client disconnected!");
-            return Ok(())
+            return Ok(());
         }
 
         match str::from_utf8(&buffer[..bytes]) {
             Ok(message) => {
                 println!("Message received: {message}");
                 let modified_message = message.to_string().to_uppercase();
-                stream.write(modified_message.as_bytes())?;
-            },
-            Err(e) => println!("Error: {e}")
+                stream.write_all(modified_message.as_bytes())?;
+            }
+            Err(e) => println!("Error: {e}"),
         }
     }
 }
