@@ -28,7 +28,6 @@ fn main() -> io::Result<()> {
 
 fn get_input(console_message: &str) -> io::Result<String> {
     let mut input = String::new();
-
     
     print!("{console_message}");
 

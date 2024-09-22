@@ -1,4 +1,4 @@
-use std::net::{ TcpListener, TcpStream, SocketAddrV4, Ipv4Addr };
+use std::net::{ TcpListener, TcpStream, SocketAddrV4, Ipv4Addr, SocketAddr };
 use std::io::{self, Read, Write};
 use std::str;
 
@@ -16,16 +16,16 @@ fn main() -> io::Result<()> {
         println!("Waiting for connections...");
         let (stream, client_addr) = server_listener.accept()?;
         println!("Client connected! Client address: {}", client_addr);
-        handle_client_connection(stream)?;
+        handle_client_connection(stream, client_addr)?;
     }
 }
 
 
-fn handle_client_connection(mut stream: TcpStream) -> io::Result<()> {
+fn handle_client_connection(mut stream: TcpStream, client_addr: SocketAddr) -> io::Result<()> {
     let mut buffer: [u8; 1024] = [0; 1024];
 
     loop {
-        println!("Waiting for messages...");
+        println!("Waiting for messages from {client_addr}...");
         let bytes = stream.read(&mut buffer)?;
         
         if bytes == 0 {
